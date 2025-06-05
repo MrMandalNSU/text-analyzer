@@ -6,6 +6,18 @@ const theme = createTheme({
     secondary: { main: "#dc004e" },
     background: { default: "#f5f5f5" },
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&:focus": {
+            outline: "none",
+            boxShadow: "none",
+          },
+        },
+      },
+    },
+  },
 });
 
 export default theme;
