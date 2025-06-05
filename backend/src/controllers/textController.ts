@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { createTextService, getAllTextsService } from "../services/textService";
+import {
+  createTextService,
+  getAllTextsService,
+  deleteTextService,
+} from "../services/textService";
 import "../models/analysisModel";
 
 export const createText = async (
@@ -32,5 +36,18 @@ export const getAllTexts = async (
   } catch (err) {
     console.error("Error fetching texts:", err);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteText = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { textId } = req.params;
+    const result = await deleteTextService(textId);
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ message: (err as Error).message });
   }
 };
