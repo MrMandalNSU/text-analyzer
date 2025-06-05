@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import textRoutes from "./routes/textRoutes";
+import analysisRoutes from "./routes/analysisRoutes";
 
 dotenv.config();
 
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/texts", textRoutes);
+app.use("/api/analysis", analysisRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI!)
