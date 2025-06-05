@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Container, Box } from "@mui/material";
+import { Container, Box, Button } from "@mui/material";
 import Layout from "./components/Layout";
 import LoadingScreen from "./components/LoadingScreen";
 import ErrorScreen from "./components/ErrorScreen";
 import Header from "./components/Header";
 import TextList from "./components/TextList";
+import AddTextDialog from "./components/AddTextDialog";
 
 function App() {
   const [texts, setTexts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchTexts();
@@ -38,6 +40,10 @@ function App() {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const handleAddText = (newTextItem) => {
+    setTexts((prev) => [newTextItem, ...prev]);
   };
 
   const handleDeleteText = (deletedId) => {
@@ -71,6 +77,20 @@ function App() {
           }}
         >
           <Header count={texts.length} />
+          <Button
+            variant="contained"
+            sx={{ alignSelf: "flex-end", mb: 2 }}
+            onClick={() => setAddDialogOpen(true)}
+          >
+            + Add Text
+          </Button>
+
+          <AddTextDialog
+            open={addDialogOpen}
+            onClose={() => setAddDialogOpen(false)}
+            onSave={handleAddText}
+          />
+
           <TextList
             texts={texts}
             formatDate={formatDate}

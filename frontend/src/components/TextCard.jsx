@@ -16,12 +16,17 @@ import {
 } from "@mui/material";
 
 function TextCard({ textItem, formatDate, onDelete }) {
-  const [analysisResults, setAnalysisResults] = useState(null);
+  const [analysisResults, setAnalysisResults] = useState({
+    words: null,
+    characters: null,
+    sentences: null,
+    paragraphs: null,
+    longestWords: null,
+  });
   const [loadingResult, setLoadingResult] = useState(false);
   const [errorResult, setErrorResult] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  // Fetch analysis result on button click (POST)
   const fetchAnalysis = async (type) => {
     setLoadingResult(true);
     setErrorResult(null);
@@ -32,7 +37,19 @@ function TextCard({ textItem, formatDate, onDelete }) {
       );
       if (!response.ok) throw new Error(`Error: ${response.status}`);
       const data = await response.json();
-      setAnalysisResults({ type, data });
+
+      const keyMap = {
+        words: "words",
+        characters: "characters",
+        sentences: "sentences",
+        paragraphs: "paragraphs",
+        "longest-words": "longestWords",
+      };
+
+      setAnalysisResults((prev) => ({
+        ...prev,
+        [keyMap[type]]: data,
+      }));
     } catch (err) {
       setErrorResult(err.message);
     } finally {
@@ -40,11 +57,9 @@ function TextCard({ textItem, formatDate, onDelete }) {
     }
   };
 
-  // Handle Delete confirmation open/close
   const openConfirm = () => setConfirmOpen(true);
   const closeConfirm = () => setConfirmOpen(false);
 
-  // Handle actual delete
   const handleDelete = async () => {
     try {
       const response = await fetch(
@@ -97,97 +112,90 @@ function TextCard({ textItem, formatDate, onDelete }) {
 
         <Divider sx={{ my: 2 }} />
 
-        {textItem.analysisId || analysisResults ? (
-          <Paper
-            elevation={0}
-            sx={{ p: 2, bgcolor: "grey.50", borderRadius: 1 }}
-          >
-            <Typography variant="h6" gutterBottom color="secondary">
-              Analysis Results
-            </Typography>
-            {/* Show fetched or existing analysis */}
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
-              <Typography variant="body2" color="text.secondary">
-                <strong>Words:</strong>{" "}
-                {analysisResults?.type === "words"
-                  ? analysisResults.data.wordCount
-                  : textItem.analysisId?.wordCount ?? "-"}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                <strong>Characters:</strong>{" "}
-                {analysisResults?.type === "characters"
-                  ? analysisResults.data.charCount
-                  : textItem.analysisId?.charCount ?? "-"}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                <strong>Sentences:</strong>{" "}
-                {analysisResults?.type === "sentences"
-                  ? analysisResults.data.sentenceCount
-                  : textItem.analysisId?.sentenceCount ?? "-"}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                <strong>Paragraphs:</strong>{" "}
-                {analysisResults?.type === "paragraphs"
-                  ? analysisResults.data.paragraphCount
-                  : textItem.analysisId?.paragraphCount ?? "-"}
-              </Typography>
-            </Box>
+        <Paper elevation={0} sx={{ p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
+          <Typography variant="h6" gutterBottom color="secondary">
+            Analysis Results
+          </Typography>
 
-            {(analysisResults?.type === "longest-words"
-              ? analysisResults.data.longestWords
-              : textItem.analysisId?.longestWords) &&
-            (analysisResults?.type === "longest-words"
-              ? analysisResults.data.longestWords.length > 0
-              : textItem.analysisId?.longestWords?.length > 0) ? (
-              <Box>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  <strong>Longest word(s):</strong>
-                </Typography>
-                <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-                  {(analysisResults?.type === "longest-words"
-                    ? analysisResults.data.longestWords
-                    : textItem.analysisId.longestWords
-                  ).map((word) => (
-                    <Chip
-                      key={word}
-                      label={word}
-                      size="small"
-                      color="secondary"
-                      variant="outlined"
-                    />
-                  ))}
-                </Box>
-              </Box>
-            ) : null}
-          </Paper>
-        ) : (
-          <>
-            {errorResult && (
-              <Typography variant="body2" color="error" sx={{ mb: 1 }}>
-                {errorResult}
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              <strong>Words:</strong>{" "}
+              {analysisResults.words?.wordCount ??
+                textItem.analysisId?.wordCount ??
+                "-"}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              <strong>Characters:</strong>{" "}
+              {analysisResults.characters?.charCount ??
+                textItem.analysisId?.charCount ??
+                "-"}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              <strong>Sentences:</strong>{" "}
+              {analysisResults.sentences?.sentenceCount ??
+                textItem.analysisId?.sentenceCount ??
+                "-"}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              <strong>Paragraphs:</strong>{" "}
+              {analysisResults.paragraphs?.paragraphCount ??
+                textItem.analysisId?.paragraphCount ??
+                "-"}
+            </Typography>
+          </Box>
+
+          {(
+            analysisResults.longestWords?.longestWords ??
+            textItem.analysisId?.longestWords
+          )?.length > 0 && (
+            <Box>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                <strong>Longest word(s):</strong>
               </Typography>
-            )}
-            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
-              {[
-                "words",
-                "characters",
-                "sentences",
-                "paragraphs",
-                "longest-words",
-              ].map((type) => (
-                <Button
-                  key={type}
-                  variant="contained"
-                  size="small"
-                  onClick={() => fetchAnalysis(type)}
-                  disabled={loadingResult}
-                >
-                  {type.replace("-", " ").toUpperCase()}
-                </Button>
-              ))}
+              <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+                {(
+                  analysisResults.longestWords?.longestWords ??
+                  textItem.analysisId?.longestWords
+                ).map((word) => (
+                  <Chip
+                    key={word}
+                    label={word}
+                    size="small"
+                    color="secondary"
+                    variant="outlined"
+                  />
+                ))}
+              </Box>
             </Box>
-          </>
+          )}
+        </Paper>
+
+        {errorResult && (
+          <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+            {errorResult}
+          </Typography>
         )}
+
+        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 2 }}>
+          {[
+            "words",
+            "characters",
+            "sentences",
+            "paragraphs",
+            "longest-words",
+          ].map((type) => (
+            <Button
+              key={type}
+              variant="outlined"
+              size="small"
+              color="primary"
+              onClick={() => fetchAnalysis(type)}
+              disabled={loadingResult}
+            >
+              {type.replace("-", " ").toUpperCase()}
+            </Button>
+          ))}
+        </Box>
 
         <Box
           sx={{ mt: 2, pt: 1, borderTop: "1px solid", borderColor: "divider" }}
