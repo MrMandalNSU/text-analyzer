@@ -15,6 +15,8 @@ import {
   DialogActions,
 } from "@mui/material";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function TextCard({ textItem, formatDate, onDelete }) {
   const [analysisResults, setAnalysisResults] = useState({
     words: null,
@@ -32,7 +34,7 @@ function TextCard({ textItem, formatDate, onDelete }) {
     setErrorResult(null);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/analysis/${textItem._id}/${type}`,
+        `${API_BASE_URL}/analysis/${textItem._id}/${type}`,
         { method: "POST" }
       );
       if (!response.ok) throw new Error(`Error: ${response.status}`);
@@ -62,10 +64,9 @@ function TextCard({ textItem, formatDate, onDelete }) {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/texts/${textItem._id}`,
-        { method: "DELETE" }
-      );
+      const response = await fetch(`${API_BASE_URL}/texts/${textItem._id}`, {
+        method: "DELETE",
+      });
       if (!response.ok) throw new Error(`Delete failed: ${response.status}`);
       onDelete(textItem._id);
       closeConfirm();

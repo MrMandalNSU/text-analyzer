@@ -7,6 +7,8 @@ import Header from "./components/Header";
 import TextList from "./components/TextList";
 import AddTextDialog from "./components/AddTextDialog";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 function App() {
   const [texts, setTexts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,7 @@ function App() {
   const fetchTexts = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/api/texts");
+      const response = await fetch(`${API_BASE_URL}/texts`);
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
