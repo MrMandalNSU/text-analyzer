@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Text from "../models/textModel";
+import { createTextService, getAllTextsService } from "../services/textService";
 import "../models/analysisModel";
 
 export const createText = async (
@@ -14,7 +14,7 @@ export const createText = async (
       return;
     }
 
-    const newText = await Text.create({ userId, text });
+    const newText = await createTextService(userId, text);
     res.status(201).json(newText);
   } catch (err) {
     console.error("Error creating text:", err);
@@ -27,7 +27,7 @@ export const getAllTexts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const texts = await Text.find().populate("analysisId");
+    const texts = await getAllTextsService();
     res.json(texts);
   } catch (err) {
     console.error("Error fetching texts:", err);
