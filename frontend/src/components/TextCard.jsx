@@ -13,7 +13,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  TextField,
 } from "@mui/material";
+
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -29,6 +34,10 @@ function TextCard({ textItem, formatDate, onDelete }) {
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [errorResult, setErrorResult] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [editText, setEditText] = useState(textItem.text);
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const fetchAnalysis = async (type) => {
     setLoadingResult(true);
@@ -79,6 +88,47 @@ function TextCard({ textItem, formatDate, onDelete }) {
     }
   };
 
+  const openEdit = () => {
+    setEditText(textItem.text); // reset to original
+    setEditOpen(true);
+  };
+
+  const closeEdit = () => setEditOpen(false);
+
+  const handleEditSave = async () => {
+    setSavingEdit(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/texts/${textItem._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: editText }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update");
+
+      const updated = await response.json();
+      textItem.text = updated.text; // Update text in-place
+      textItem.updatedAt = updated.updatedAt;
+
+      // reset analysis
+      textItem.analysisId = null;
+
+      setAnalysisResults({
+        words: null,
+        characters: null,
+        sentences: null,
+        paragraphs: null,
+        longestWords: null,
+      });
+
+      closeEdit();
+    } catch (err) {
+      alert(`Error: ${err.message}`);
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   return (
     <Card
       elevation={2}
@@ -98,15 +148,20 @@ function TextCard({ textItem, formatDate, onDelete }) {
             color="primary"
             variant="outlined"
           />
-          <Button
-            variant="outlined"
-            color="error"
-            size="small"
-            onClick={openConfirm}
-            loading={loadingDelete}
-          >
-            Delete
-          </Button>
+          <Box>
+            <IconButton onClick={openEdit} color="primary">
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              variant="outlined"
+              color="error"
+              size="small"
+              onClick={openConfirm}
+              loading={loadingDelete}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Box>
         </Box>
 
         <Typography
@@ -237,6 +292,30 @@ function TextCard({ textItem, formatDate, onDelete }) {
               loading={loadingDelete}
             >
               Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={editOpen} onClose={closeEdit} fullWidth maxWidth="md">
+          <DialogContent>
+            <TextField
+              autoFocus
+              fullWidth
+              multiline
+              minRows={4}
+              label="Enter your text"
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeEdit}>Cancel</Button>
+            <Button
+              onClick={handleEditSave}
+              variant="contained"
+              disabled={savingEdit}
+            >
+              {savingEdit ? "Updating..." : "Update"}
             </Button>
           </DialogActions>
         </Dialog>
