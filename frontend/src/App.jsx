@@ -107,6 +107,7 @@ function App() {
             open={addDialogOpen}
             onClose={() => setAddDialogOpen(false)}
             onSave={handleAddText}
+            userId={userId}
           />
 
           <TextList

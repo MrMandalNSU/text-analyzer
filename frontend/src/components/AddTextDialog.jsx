@@ -11,7 +11,7 @@ import {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const userId = localStorage.getItem("unique_user_id");
 
-const AddTextDialog = ({ open, onClose, onSave }) => {
+const AddTextDialog = ({ open, onClose, onSave, userId }) => {
   const [text, setText] = useState("");
   const [loadingSave, setLoadingSave] = useState(false);
 
