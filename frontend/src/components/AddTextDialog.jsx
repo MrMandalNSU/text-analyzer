@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const userId = localStorage.getItem("unique_user_id");
 
 const AddTextDialog = ({ open, onClose, onSave }) => {
   const [text, setText] = useState("");
@@ -18,7 +19,7 @@ const AddTextDialog = ({ open, onClose, onSave }) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        userId: "user123",
+        userId: userId,
         text: text,
       }),
     });
