@@ -1,6 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 
-const textSchema = new mongoose.Schema(
+export interface IText extends Document {
+  userId: string;
+  text: string;
+  analysisId: Types.ObjectId | null;
+}
+
+const textSchema = new mongoose.Schema<IText>(
   {
     userId: {
       type: String,
@@ -19,4 +25,4 @@ const textSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("Text", textSchema);
+export default mongoose.model<IText>("Text", textSchema);
