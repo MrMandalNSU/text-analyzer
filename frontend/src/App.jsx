@@ -9,7 +9,6 @@ import AddTextDialog from "./components/AddTextDialog";
 import { getOrCreateUserId } from "./utils/generateUserId";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-getOrCreateUserId(); //Setting up user
 
 function App() {
   const [texts, setTexts] = useState([]);
@@ -26,7 +25,7 @@ function App() {
       existing = newId;
     }
     setUserId(existing);
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (userId) fetchTexts(userId);
