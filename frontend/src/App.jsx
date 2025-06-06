@@ -6,9 +6,10 @@ import ErrorScreen from "./components/ErrorScreen";
 import Header from "./components/Header";
 import TextList from "./components/TextList";
 import AddTextDialog from "./components/AddTextDialog";
-import { generateUserId } from "./utils/generateUserId";
+import { getOrCreateUserId } from "./utils/generateUserId";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+getOrCreateUserId(); //Setting up user
 
 function App() {
   const [texts, setTexts] = useState([]);
@@ -20,7 +21,7 @@ function App() {
   useEffect(() => {
     let existing = localStorage.getItem("unique_user_id");
     if (!existing) {
-      const newId = generateUserId();
+      const newId = getOrCreateUserId();
       localStorage.setItem("unique_user_id", newId);
       existing = newId;
     }

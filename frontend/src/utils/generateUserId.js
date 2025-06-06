@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
 
-// Lists can be expanded as needed
 const adjectives = [
   "curious",
   "brave",
@@ -37,6 +36,15 @@ function getRandomFrom(arr) {
 export function generateUserId() {
   const adj = getRandomFrom(adjectives);
   const noun = getRandomFrom(nouns);
-  const uuidPart = uuidv4().slice(0, 8);
+  const uuidPart = uuidv4().slice(0, 4);
   return `${adj}-${noun}-${uuidPart}`;
+}
+
+export function getOrCreateUserId() {
+  let userId = localStorage.getItem("unique_user_id");
+  if (!userId) {
+    userId = generateUserId();
+    localStorage.setItem("unique_user_id", userId);
+  }
+  return userId;
 }
