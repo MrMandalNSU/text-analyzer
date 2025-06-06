@@ -5,7 +5,11 @@ export const createTextService = async (userId: string, text: string) => {
   return await Text.create({ userId, text });
 };
 
-export const getAllTextsService = async () => {
+export const getAllTextsService = async (userId: string) => {
+  return await Text.find({ userId }).populate("analysisId");
+};
+
+export const getAllUsersTextsService = async () => {
   return await Text.find().populate("analysisId");
 };
 

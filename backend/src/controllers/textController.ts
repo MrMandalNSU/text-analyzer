@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   createTextService,
   getAllTextsService,
+  getAllUsersTextsService,
   deleteTextService,
 } from "../services/textService";
 import "../models/analysisModel";
@@ -31,7 +32,21 @@ export const getAllTexts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const texts = await getAllTextsService();
+    const { userId } = req.query;
+    const texts = await getAllTextsService(userId as string);
+    res.json(texts);
+  } catch (err) {
+    console.error("Error fetching texts:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getAllUsersTexts = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const texts = await getAllUsersTextsService();
     res.json(texts);
   } catch (err) {
     console.error("Error fetching texts:", err);
