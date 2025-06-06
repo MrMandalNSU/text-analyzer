@@ -10,6 +10,8 @@ import { getOrCreateUserId } from "./utils/generateUserId";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+getOrCreateUserId(); // Generate user id
+
 function App() {
   const [texts, setTexts] = useState([]);
   const [loading, setLoading] = useState(true);
