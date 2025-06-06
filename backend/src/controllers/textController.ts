@@ -4,6 +4,7 @@ import {
   getAllTextsService,
   getAllUsersTextsService,
   deleteTextService,
+  updateTextService,
 } from "../services/textService";
 import "../models/analysisModel";
 
@@ -51,6 +52,26 @@ export const getAllUsersTexts = async (
   } catch (err) {
     console.error("Error fetching texts:", err);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateText = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { textId } = req.params;
+    const { text } = req.body;
+
+    if (!text) {
+      res.status(400).json({ message: "Text content is required." });
+      return;
+    }
+
+    const updated = await updateTextService(textId, text);
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ message: (err as Error).message });
   }
 };
 
