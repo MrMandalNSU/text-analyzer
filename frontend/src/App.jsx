@@ -27,7 +27,7 @@ function App() {
       existing = newId;
     }
     setUserId(existing);
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     if (userId) fetchTexts(userId);
