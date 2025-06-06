@@ -6,6 +6,7 @@ import ErrorScreen from "./components/ErrorScreen";
 import Header from "./components/Header";
 import TextList from "./components/TextList";
 import AddTextDialog from "./components/AddTextDialog";
+import { generateUserId } from "./utils/generateUserId";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -14,15 +15,28 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    fetchTexts();
+    let existing = localStorage.getItem("unique_user_id");
+    if (!existing) {
+      const newId = generateUserId();
+      localStorage.setItem("unique_user_id", newId);
+      existing = newId;
+    }
+    setUserId(existing);
   }, []);
+
+  useEffect(() => {
+    if (userId) fetchTexts(userId);
+  }, [userId]);
 
   const fetchTexts = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/texts`);
+      const response = await fetch(
+        `${API_BASE_URL}/texts?userId=${encodeURIComponent(userId)}`
+      );
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
