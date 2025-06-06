@@ -26,6 +26,7 @@ function TextCard({ textItem, formatDate, onDelete }) {
     longestWords: null,
   });
   const [loadingResult, setLoadingResult] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const [errorResult, setErrorResult] = useState(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -63,6 +64,7 @@ function TextCard({ textItem, formatDate, onDelete }) {
   const closeConfirm = () => setConfirmOpen(false);
 
   const handleDelete = async () => {
+    setLoadingDelete(true);
     try {
       const response = await fetch(`${API_BASE_URL}/texts/${textItem._id}`, {
         method: "DELETE",
@@ -72,6 +74,8 @@ function TextCard({ textItem, formatDate, onDelete }) {
       closeConfirm();
     } catch (err) {
       alert(`Failed to delete: ${err.message}`);
+    } finally {
+      setLoadingDelete(false);
     }
   };
 
@@ -99,6 +103,7 @@ function TextCard({ textItem, formatDate, onDelete }) {
             color="error"
             size="small"
             onClick={openConfirm}
+            loading={loadingDelete}
           >
             Delete
           </Button>
@@ -225,7 +230,12 @@ function TextCard({ textItem, formatDate, onDelete }) {
           </DialogContent>
           <DialogActions>
             <Button onClick={closeConfirm}>Cancel</Button>
-            <Button color="error" onClick={handleDelete} autoFocus>
+            <Button
+              color="error"
+              onClick={handleDelete}
+              autoFocus
+              loading={loadingDelete}
+            >
               Delete
             </Button>
           </DialogActions>

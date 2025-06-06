@@ -13,24 +13,32 @@ const userId = localStorage.getItem("unique_user_id");
 
 const AddTextDialog = ({ open, onClose, onSave }) => {
   const [text, setText] = useState("");
+  const [loadingSave, setLoadingSave] = useState(false);
 
   const handleSave = async () => {
-    const response = await fetch(`${API_BASE_URL}/texts`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: userId,
-        text: text,
-      }),
-    });
+    setLoadingSave(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/texts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: userId,
+          text: text,
+        }),
+      });
 
-    if (response.ok) {
-      const newText = await response.json();
-      onSave(newText);
-      onClose();
-      setText("");
-    } else {
+      if (response.ok) {
+        const newText = await response.json();
+        onSave(newText);
+        onClose();
+        setText("");
+      } else {
+        alert("Failed to save");
+      }
+    } catch (err) {
       alert("Failed to save");
+    } finally {
+      setLoadingSave(false);
     }
   };
 
@@ -53,6 +61,7 @@ const AddTextDialog = ({ open, onClose, onSave }) => {
           onClick={handleSave}
           variant="contained"
           disabled={!text.trim()}
+          loading={loadingSave}
         >
           Save
         </Button>
