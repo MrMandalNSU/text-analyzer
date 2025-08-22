@@ -18,6 +18,7 @@ function App() {
   const [error, setError] = useState(null);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [userCount, setUserCount] = useState(null);
 
   useEffect(() => {
     let existing = localStorage.getItem("unique_user_id");
@@ -30,7 +31,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (userId) fetchTexts(userId);
+    if (userId) {
+      fetchTexts(userId);
+      fetchUserCount();
+    }
   }, [userId]);
 
   const fetchTexts = async () => {
@@ -47,6 +51,18 @@ function App() {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchUserCount = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/texts/userCount`);
+      const data = await response.json();
+      setUserCount(data.count);
+
+      console.log(data);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -94,7 +110,7 @@ function App() {
             mx: "auto",
           }}
         >
-          <Header count={texts.length} />
+          <Header count={texts.length} userId={userId} userCount={userCount} />
           <Button
             variant="contained"
             sx={{ alignSelf: "flex-end", mb: 2 }}
