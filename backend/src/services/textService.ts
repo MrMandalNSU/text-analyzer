@@ -37,3 +37,12 @@ export const deleteTextService = async (textId: string) => {
   await Text.findByIdAndDelete(textId);
   return { message: "Text and its analysis (if any) deleted successfully." };
 };
+
+export const getUserCountService = async () => {
+  const uniqueUsers = await Text.distinct("userId");
+
+  return {
+    count: uniqueUsers.length,
+    users: uniqueUsers,
+  };
+};

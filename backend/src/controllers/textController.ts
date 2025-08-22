@@ -5,6 +5,7 @@ import {
   getAllUsersTextsService,
   deleteTextService,
   updateTextService,
+  getUserCountService,
 } from "../services/textService";
 import "../models/analysisModel";
 
@@ -85,5 +86,18 @@ export const deleteText = async (
     res.json(result);
   } catch (err) {
     res.status(400).json({ message: (err as Error).message });
+  }
+};
+
+export const getUserCount = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userCount = await getUserCountService();
+    res.json(userCount);
+  } catch (err) {
+    console.error("Error fetching user count:", err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
