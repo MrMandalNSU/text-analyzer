@@ -253,56 +253,63 @@ function TextCard({ textItem, formatDate, onDelete }) {
         )}
 
         {/* Metrics Grid */}
-        <Grid container spacing={2} sx={{ mb: 2.5 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "repeat(2, 1fr)", sm: "repeat(4, 1fr)" },
+            gap: 2,
+            mb: 2.5,
+            width: "100%",
+          }}
+        >
           {metrics.map((m) => (
-            <Grid item xs={6} sm={3} key={m.label}>
-              <Box
-                sx={{
-                  p: 2,
-                  borderRadius: "12px",
-                  textAlign: "center",
-                  bgcolor: (theme) =>
-                    theme.palette.mode === "dark"
-                      ? "rgba(255, 255, 255, 0.02)"
-                      : "rgba(0, 0, 0, 0.02)",
-                  border: "1px solid",
-                  borderColor: "divider",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minHeight: "90px",
-                  transition: "all 0.2s ease",
-                  "&:hover": isAnalyzed
-                    ? {}
-                    : {
-                        bgcolor: (theme) =>
-                          theme.palette.mode === "dark"
-                            ? "rgba(255, 255, 255, 0.05)"
-                            : "rgba(0, 0, 0, 0.04)",
-                        transform: "scale(1.02)",
-                        cursor: "pointer",
-                      },
-                }}
-                onClick={!isAnalyzed ? fetchAllAnalysis : undefined}
-              >
-                <Box sx={{ color: m.color, mb: 0.5, display: "flex" }}>
-                  {m.icon}
-                </Box>
-                <Typography variant="h5" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
-                  {loadingResult && m.value === undefined ? (
-                    <CircularProgress size={18} thickness={5} sx={{ color: "text.secondary" }} />
-                  ) : (
-                    m.value ?? "-"
-                  )}
-                </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, mt: 0.2 }}>
-                  {m.label}
-                </Typography>
+            <Box
+              key={m.label}
+              sx={{
+                p: 2,
+                borderRadius: "12px",
+                textAlign: "center",
+                bgcolor: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? "rgba(255, 255, 255, 0.02)"
+                    : "rgba(0, 0, 0, 0.02)",
+                border: "1px solid",
+                borderColor: "divider",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: "90px",
+                transition: "all 0.2s ease",
+                "&:hover": isAnalyzed
+                  ? {}
+                  : {
+                      bgcolor: (theme) =>
+                        theme.palette.mode === "dark"
+                          ? "rgba(255, 255, 255, 0.05)"
+                          : "rgba(0, 0, 0, 0.04)",
+                      transform: "scale(1.02)",
+                      cursor: "pointer",
+                    },
+              }}
+              onClick={!isAnalyzed ? fetchAllAnalysis : undefined}
+            >
+              <Box sx={{ color: m.color, mb: 0.5, display: "flex" }}>
+                {m.icon}
               </Box>
-            </Grid>
+              <Typography variant="h5" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+                {loadingResult && m.value === undefined ? (
+                  <CircularProgress size={18} thickness={5} sx={{ color: "text.secondary" }} />
+                ) : (
+                  m.value ?? "-"
+                )}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, mt: 0.2 }}>
+                {m.label}
+              </Typography>
+            </Box>
           ))}
-        </Grid>
+        </Box>
 
         {/* Longest Words Display */}
         {longestWords && longestWords.length > 0 && (

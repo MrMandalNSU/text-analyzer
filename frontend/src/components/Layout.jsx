@@ -88,8 +88,6 @@ const Layout = ({
           display: "flex",
           alignItems: "center",
           gap: 1.5,
-          borderBottom: "1px solid",
-          borderColor: "divider",
         }}
       >
         <Box
@@ -125,6 +123,72 @@ const Layout = ({
           </Typography>
         </Box>
       </Box>
+
+      {/* Theme Toggle & User Info Block (Moved to Top) */}
+      <Box sx={{ px: 2, pb: 2, display: "flex", flexDirection: "column", gap: 2 }}>
+        {/* Theme toggle row */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 1 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+            {themeMode === "dark" ? "Dark Mode" : "Light Mode"}
+          </Typography>
+          <IconButton onClick={toggleThemeMode} color="inherit" size="small">
+            {themeMode === "dark" ? (
+              <Brightness7Icon sx={{ fontSize: 20, color: "#f59e0b" }} />
+            ) : (
+              <Brightness4Icon sx={{ fontSize: 20, color: "#64748b" }} />
+            )}
+          </IconButton>
+        </Box>
+
+        {/* User Card */}
+        {userId && (
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: "12px",
+              bgcolor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.02)" : "rgba(0, 0, 0, 0.02)",
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Your Session ID
+              </Typography>
+              <Tooltip title={copied ? "Copied!" : "Copy Session ID"}>
+                <IconButton size="small" onClick={handleCopyUserId} sx={{ p: 0.5 }}>
+                  {copied ? <CheckIcon sx={{ fontSize: 14, color: "success.main" }} /> : <ContentCopyIcon sx={{ fontSize: 14 }} />}
+                </IconButton>
+              </Tooltip>
+            </Box>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: "monospace",
+                fontWeight: 600,
+                color: "primary.main",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                fontSize: "0.8rem",
+              }}
+            >
+              {userId}
+            </Typography>
+
+            {userCount !== null && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }}>
+                <PeopleIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
+                  Platform Users: <strong>{userCount}</strong>
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        )}
+      </Box>
+
+      <Divider sx={{ mx: 2 }} />
 
       {/* Navigation List */}
       <List sx={{ px: 2, py: 3, flexGrow: 1, display: "flex", flexDirection: "column", gap: 1 }}>
@@ -192,70 +256,50 @@ const Layout = ({
         })}
       </List>
 
-      <Divider sx={{ mx: 2 }} />
-
-      {/* Theme Toggle & User Info Footer */}
-      <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-        {/* Theme toggle row */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 1 }}>
-          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-            {themeMode === "dark" ? "Dark Mode" : "Light Mode"}
-          </Typography>
-          <IconButton onClick={toggleThemeMode} color="inherit" size="small">
-            {themeMode === "dark" ? (
-              <Brightness7Icon sx={{ fontSize: 20, color: "#f59e0b" }} />
-            ) : (
-              <Brightness4Icon sx={{ fontSize: 20, color: "#64748b" }} />
-            )}
-          </IconButton>
-        </Box>
-
-        {/* User Card */}
-        {userId && (
+      {/* Sidebar Footer */}
+      <Box
+        sx={{
+          px: 3,
+          pb: 2.5,
+          pt: 2,
+          borderTop: "1px solid",
+          borderColor: "divider",
+          textAlign: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{
+            fontFamily: '"Plus Jakarta Sans", sans-serif',
+            fontWeight: 500,
+            fontSize: "0.75rem",
+          }}
+        >
+          Made with ♥ by{" "}
           <Box
+            component="a"
+            href="https://sudipta.xyz"
+            target="_blank"
+            rel="noopener noreferrer"
             sx={{
-              p: 2,
-              borderRadius: "12px",
-              bgcolor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.02)" : "rgba(0, 0, 0, 0.02)",
-              border: "1px solid",
-              borderColor: "divider",
+              color: "primary.main",
+              textDecoration: "none",
+              fontWeight: 700,
+              transition: "all 0.2s ease",
+              "&:hover": {
+                color: "primary.dark",
+                textShadow: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? "0 0 8px rgba(129, 140, 248, 0.4)"
+                    : "0 0 8px rgba(79, 70, 229, 0.2)",
+              },
             }}
           >
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5 }}>
-                Your Session ID
-              </Typography>
-              <Tooltip title={copied ? "Copied!" : "Copy Session ID"}>
-                <IconButton size="small" onClick={handleCopyUserId} sx={{ p: 0.5 }}>
-                  {copied ? <CheckIcon sx={{ fontSize: 14, color: "success.main" }} /> : <ContentCopyIcon sx={{ fontSize: 14 }} />}
-                </IconButton>
-              </Tooltip>
-            </Box>
-            <Typography
-              variant="body2"
-              sx={{
-                fontFamily: "monospace",
-                fontWeight: 600,
-                color: "primary.main",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                fontSize: "0.8rem",
-              }}
-            >
-              {userId}
-            </Typography>
-
-            {userCount !== null && (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5 }}>
-                <PeopleIcon sx={{ fontSize: 16, color: "text.secondary" }} />
-                <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
-                  Platform Users: <strong>{userCount}</strong>
-                </Typography>
-              </Box>
-            )}
+            Sudipta Mandal
           </Box>
-        )}
+        </Typography>
       </Box>
     </Box>
   );
@@ -273,7 +317,6 @@ const Layout = ({
             boxShadow: "none",
             borderBottom: "1px solid",
             borderColor: "divider",
-            zIndex: theme.zIndex.drawer + 1,
           }}
         >
           <Toolbar sx={{ justifyContent: "space-between" }}>

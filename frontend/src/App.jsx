@@ -7,8 +7,8 @@ import LoadingScreen from "./components/LoadingScreen";
 import ErrorScreen from "./components/ErrorScreen";
 import TextList from "./components/TextList";
 import AddTextDialog from "./components/AddTextDialog";
-import TextFormatterPlaceholder from "./components/TextFormatterPlaceholder";
-import JsonViewerPlaceholder from "./components/JsonViewerPlaceholder";
+import TextFormatter from "./components/TextFormatter";
+import JsonViewer from "./components/JsonViewer";
 import getAppTheme from "./theme";
 import { getOrCreateUserId } from "./utils/generateUserId";
 
@@ -22,8 +22,36 @@ function App() {
   const [userId, setUserId] = useState(null);
   const [userCount, setUserCount] = useState(null);
 
+  // Helper functions for hash routing
+  const getTabFromHash = () => {
+    const hash = window.location.hash;
+    if (hash === "#/formatter" || hash === "#formatter") return 1;
+    if (hash === "#/json-viewer" || hash === "#json-viewer") return 2;
+    return 0; // Default or #/analyzer
+  };
+
+  const getHashFromTab = (tabIndex) => {
+    if (tabIndex === 1) return "#/formatter";
+    if (tabIndex === 2) return "#/json-viewer";
+    return "#/analyzer";
+  };
+
   // Layout Tab State: 0 = Analyzer, 1 = Formatter, 2 = JSON Viewer
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(getTabFromHash);
+
+  // Sync state to URL hash on change
+  useEffect(() => {
+    window.location.hash = getHashFromTab(currentTab);
+  }, [currentTab]);
+
+  // Sync URL hash back to state (browser navigation or direct URL typing)
+  useEffect(() => {
+    const handleHashChange = () => {
+      setCurrentTab(getTabFromHash());
+    };
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
 
   // Light/Dark Theme Mode State
   const [themeMode, setThemeMode] = useState(() => {
@@ -182,8 +210,8 @@ function App() {
           </Box>
         )}
 
-        {currentTab === 1 && <TextFormatterPlaceholder />}
-        {currentTab === 2 && <JsonViewerPlaceholder />}
+        {currentTab === 1 && <TextFormatter />}
+        {currentTab === 2 && <JsonViewer />}
       </Layout>
     </ThemeProvider>
   );
