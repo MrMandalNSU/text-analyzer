@@ -18,24 +18,12 @@ export default async function handler(req, res) {
   }
 
   const backendApiUrl = normalizeBackendApiUrl(rawBackendApiUrl);
+  const incomingUrl = new URL(req.url, `https://${req.headers.host}`);
+  const path = incomingUrl.pathname.replace(/^\/api\/?/, "");
+  const target = new URL(`${backendApiUrl}/${path}`);
+  target.search = incomingUrl.search;
 
-  const path = Array.isArray(req.query.path)
-    ? req.query.path.join("/")
-    : req.query.path || "";
-  const query = new URLSearchParams();
-
-  for (const [key, value] of Object.entries(req.query)) {
-    if (key === "path") continue;
-
-    if (Array.isArray(value)) {
-      value.forEach((item) => query.append(key, item));
-    } else if (value !== undefined) {
-      query.append(key, value);
-    }
-  }
-
-  const target = new URL(`${backendApiUrl.replace(/\/$/, "")}/${path}`);
-  target.search = query.toString();
+  res.setHeader("X-Text-Analyzer-Proxy", "url-path-v1");
 
   const headers = new Headers(req.headers);
   headers.delete("host");
