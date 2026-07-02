@@ -1,20 +1,27 @@
 const rawBackendApiUrl = process.env.BACKEND_API_URL;
+const apiProxyPath = process.env.API_PROXY_PATH || process.env.VITE_API_PROXY_PATH;
 
-function normalizeBackendApiUrl(value) {
-  const url = new URL(value);
-  const pathname = url.pathname.replace(/\/$/, "");
-
-  if (!pathname.endsWith("/api")) {
-    url.pathname = `${pathname}/api`;
+function requiredConfig(value, key) {
+  if (!value?.trim()) {
+    throw new Error(`${key} is required.`);
   }
 
-  return url.toString().replace(/\/$/, "");
+  return value.trim();
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function resolvePath(req, fallbackPath) {
   const incomingUrl = new URL(req.url, `https://${req.headers.host}`);
+  const proxyPath = requiredConfig(apiProxyPath, "API_PROXY_PATH").replace(
+    /\/$/,
+    ""
+  );
+  const proxyPathPattern = new RegExp(`^${escapeRegExp(proxyPath)}\\/?`);
   const pathFromUrl = incomingUrl.pathname
-    .replace(/^\/api\/?/, "")
+    .replace(proxyPathPattern, "")
     .replace(/^\/+/, "");
 
   return {
@@ -24,12 +31,10 @@ function resolvePath(req, fallbackPath) {
 }
 
 export async function proxyRequest(req, res, fallbackPath = "") {
-  if (!rawBackendApiUrl) {
-    res.status(500).json({ message: "BACKEND_API_URL is not configured." });
-    return;
-  }
-
-  const backendApiUrl = normalizeBackendApiUrl(rawBackendApiUrl);
+  const backendApiUrl = requiredConfig(rawBackendApiUrl, "BACKEND_API_URL").replace(
+    /\/$/,
+    ""
+  );
   const { path, search } = resolvePath(req, fallbackPath);
   const target = new URL(`${backendApiUrl}/${path}`);
   target.search = search;

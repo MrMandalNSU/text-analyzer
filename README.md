@@ -19,7 +19,9 @@ Tech Stack Used:
 - `npm run dev` -> will run the frontend server
 - create a .env file and put the backend server URL for the frontend proxy as
   `BACKEND_API_URL=http://localhost:3000/api`
-  You can also set the backend origin without `/api`; the proxy will normalize it.
+- add the frontend proxy path for browser requests and Vercel functions as
+  `VITE_API_PROXY_PATH=/api`
+  `API_PROXY_PATH=/api`
 
 ### For Backend
 
@@ -30,6 +32,10 @@ Tech Stack Used:
 - create a .env file and put the mongoDB atlas URL as
   `MONGO_URI=mongodb+srv://mrmandal:<DB_PASSWORD>@text-analyzer.wqajnkg.mongodb.net/?retryWrites=true&w=majority&appName=text-analyzer`
 - replace `<DB_PASSWORD>` as mentioned in email OR create a mongo db atlas cluster and give the full url here to use your own db
+- add the backend API route prefix as
+  `API_ROUTE_PREFIX=/api`
+- add accepted frontend origins for CORS as a comma-separated list, for example
+  `CORS_ORIGINS=https://text.sudipta.xyz,http://localhost:5173,http://localhost:4173,http://localhost:3000`
 
 ## Project Functionalities
 

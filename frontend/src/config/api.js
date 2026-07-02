@@ -1,1 +1,5 @@
-export const API_BASE_URL = "/api";
+export const API_BASE_URL = import.meta.env.VITE_API_PROXY_PATH;
+
+if (!API_BASE_URL) {
+  throw new Error("VITE_API_PROXY_PATH is required.");
+}
