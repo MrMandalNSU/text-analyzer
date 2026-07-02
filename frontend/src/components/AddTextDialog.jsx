@@ -10,8 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import PostAddIcon from "@mui/icons-material/PostAdd";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "../config/api";
 
 const AddTextDialog = ({ open, onClose, onSave, userId }) => {
   const [text, setText] = useState("");

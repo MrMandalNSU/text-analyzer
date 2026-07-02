@@ -25,8 +25,7 @@ import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import FontDownloadIcon from "@mui/icons-material/FontDownload";
 import SegmentIcon from "@mui/icons-material/Segment";
 import NotesIcon from "@mui/icons-material/Notes";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "../config/api";
 
 function TextCard({ textItem, formatDate, onDelete }) {
   const [analysisResults, setAnalysisResults] = useState({

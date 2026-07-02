@@ -11,8 +11,7 @@ import TextFormatter from "./components/TextFormatter";
 import JsonViewer from "./components/JsonViewer";
 import getAppTheme from "./theme";
 import { getOrCreateUserId } from "./utils/generateUserId";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "./config/api";
 
 function App() {
   const [texts, setTexts] = useState([]);

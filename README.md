@@ -17,8 +17,8 @@ Tech Stack Used:
 - clone the repository, go to project directory, `cd frontend` then run following commands sequentially
 - `npm install` -> to install all the dependencies
 - `npm run dev` -> will run the frontend server
-- create a .env file and put the backend server URL as
-  `VITE_API_URL=http://localhost:3000/api`
+- create a .env file and put the backend server URL for the frontend proxy as
+  `BACKEND_API_URL=http://localhost:3000/api`
 
 ### For Backend
 
