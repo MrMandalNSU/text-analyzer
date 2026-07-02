@@ -19,6 +19,7 @@ Tech Stack Used:
 - `npm run dev` -> will run the frontend server
 - create a .env file and put the backend server URL for the frontend proxy as
   `BACKEND_API_URL=http://localhost:3000/api`
+  You can also set the backend origin without `/api`; the proxy will normalize it.
 
 ### For Backend
 

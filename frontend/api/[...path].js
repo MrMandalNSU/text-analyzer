@@ -1,10 +1,23 @@
-const backendApiUrl = process.env.BACKEND_API_URL;
+const rawBackendApiUrl = process.env.BACKEND_API_URL;
+
+function normalizeBackendApiUrl(value) {
+  const url = new URL(value);
+  const pathname = url.pathname.replace(/\/$/, "");
+
+  if (!pathname.endsWith("/api")) {
+    url.pathname = `${pathname}/api`;
+  }
+
+  return url.toString().replace(/\/$/, "");
+}
 
 export default async function handler(req, res) {
-  if (!backendApiUrl) {
+  if (!rawBackendApiUrl) {
     res.status(500).json({ message: "BACKEND_API_URL is not configured." });
     return;
   }
+
+  const backendApiUrl = normalizeBackendApiUrl(rawBackendApiUrl);
 
   const path = Array.isArray(req.query.path)
     ? req.query.path.join("/")
