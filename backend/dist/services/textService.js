@@ -54,7 +54,6 @@ const getUserCountService = () => __awaiter(void 0, void 0, void 0, function* ()
     const uniqueUsers = yield textModel_1.default.distinct("userId");
     return {
         count: uniqueUsers.length,
-        users: uniqueUsers,
     };
 });
 exports.getUserCountService = getUserCountService;

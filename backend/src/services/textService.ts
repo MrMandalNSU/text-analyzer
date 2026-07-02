@@ -43,6 +43,5 @@ export const getUserCountService = async () => {
 
   return {
     count: uniqueUsers.length,
-    users: uniqueUsers,
   };
 };
